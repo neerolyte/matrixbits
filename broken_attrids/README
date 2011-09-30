@@ -1,0 +1,9 @@
+Two part script to export/import attributes for an entire Matrix package after a broken upgrade.
+
+Brokenness assumes that a Matrix package was missing during one of the upgrade steps resulting in attrids in sq_ast_attr not matching those in sq_ast_attr_val.
+
+These scripts will serialise the data in the old system and RESET the attributes in the new system. It will not actually clean up the corruption on the new system.
+
+They were written some time in 2009 for a very specifically broken upgrade from 3.something to 3.16.6, they may or may not be useful to you.
+
+Licensed under GPL v2.
