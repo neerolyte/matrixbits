@@ -1,0 +1,12 @@
+--- /var/www/matrix.orig/core/include/mysource.inc	2011-05-23 15:10:21.000000000 +1000
++++ /var/www/matrix/core/include/mysource.inc	2011-07-08 21:24:57.000000000 +1000
+@@ -478,6 +478,11 @@
+ 	*/
+ 	public function start()
+ 	{
++		// let varnish know we are logged in or not
++		$logged_in_cookie = ($this->user instanceof Public_User)?'no':'yes';
++		setcookie('SQ_LOGGED_IN', $logged_in_cookie, 0, '/', $_SERVER["HTTP_HOST"]);
++	
+ 		// if the user is Up For Review, prompt the user to change password
+ 		$require_password_change = ($this->user && !($this->user instanceof Public_User) && $this->user->status == SQ_STATUS_LIVE_APPROVAL);

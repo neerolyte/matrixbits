@@ -1,0 +1,41 @@
+sub vcl_recv {
+        if (
+                req.url ~ "/_(admin|login|nocache|edit)"
+                || req.url ~ "^/_esi"
+                || req.url ~ "^/__data/info.php"
+                || req.http.cookie ~ "\bSQ_LOGGED_IN=yes\b"
+                ) {
+        } else {
+                # matrix sets a cookie regardless of whether users are logged in or not, so we can't
+                # have varnish drop all incomming requests with cookies
+                unset req.http.cookie;
+        }
+}
+ 
+sub vcl_fetch {
+        if (
+                req.url ~ "/_(admin|login|nocache|edit)"
+                || req.url ~ "^/_esi"
+                || req.url ~ "^/__data/info.php"
+                || req.http.cookie ~ "\bSQ_LOGGED_IN=yes\b"
+                ) {
+        } else {
+                # matrix sets a cookie regardless of whether users are logged in or not, so we can't
+                # have varnish drop all incomming requests with cookies
+                unset obj.http.Set-Cookie;
+        }
+        
+        if (req.url ~ "^/_esi") {
+                // never cache an esi
+                return (pass);
+        } else {
+                esi;
+        }
+        if (!obj.cacheable) {
+                return (pass);
+        }
+        #if (obj.http.Set-Cookie) {
+        #       return (pass);
+        #}
+        return (deliver);
+}

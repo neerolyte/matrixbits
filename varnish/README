@@ -1,0 +1,17 @@
+Some loose notes on getting Varnish and Matrix to play nice.
+
+These were taken during a quick (few hours) prototype to determine if we could get Varnish to handle ESI tags when sitting in front of Matrix, without behaving too significantly differently from Squid.
+
+The answer seemed to be yes.
+
+Install was on a CentOS 5.x x86_64 VM
+
+Install EPEL:
+rpm -Uvh http://download.fedora.redhat.com/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm
+Install varnish:
+yum install varnish
+
+
+To have caching work correctly, you need to patch Matrix to have it tell varnish when the user is logged in or not and then put in the extra VCL to process the new cookie.
+
+This adds some cool behavior where a logged in user can browse the site and in a configurable manner get a dynamic version or not (however you do have to configure the URL prefixes in VCL).
