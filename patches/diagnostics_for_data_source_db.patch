@@ -1,29 +1,29 @@
 diff -Naur /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/data_source_db_edit_fns.inc ./data_source_db_edit_fns.inc
 --- /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/data_source_db_edit_fns.inc	2010-08-27 14:29:11.000000000 +1000
-+++ ./data_source_db_edit_fns.inc	2011-11-11 17:11:14.000000000 +1100
++++ ./data_source_db_edit_fns.inc	2011-11-11 17:36:58.000000000 +1100
 @@ -619,5 +619,26 @@
  	}//end processDynamicData()
  
  
-+        /**
-+        * Paint Debug info for this asset
-+        *
-+        * @param object &$asset the asset
-+        * @param object &$o             the backend outputter
-+        * @param string $prefix prefix for form elements
-+        *
-+        * @return boolean
-+        * @access public
-+        */
-+        function paintDebugInfo(&$asset, &$o, $prefix)
-+        {
-+                echo "<div>Can connect: " . var_export($asset->connectToDB(), true) . "</div>";
++	/**
++	* Paint Debug info for this asset
++	*
++	* @param object &$asset the asset
++	* @param object &$o             the backend outputter
++	* @param string $prefix prefix for form elements
++	*
++	* @return boolean
++	* @access public
++	*/
++	function paintDebugInfo(&$asset, &$o, $prefix)
++	{
++		echo "<div>Can connect: " . ($asset->connectToDB()?'true':'false') . "</div>";
 +		if (isset($asset->_tmp['db_conection_exception'])) {
 +			echo "<div>Connection failed: " . $asset->_tmp['db_conection_exception']->getMessage() . "</div>";
 +		}
 +
-+                return TRUE;
-+        }//end paintDebugInfo()
++		return TRUE;
++	}//end paintDebugInfo()
 +
 +
  }//end class
@@ -41,33 +41,33 @@ diff -Naur /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/da
  
 diff -Naur /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/edit_interface_screen_details.xml ./edit_interface_screen_details.xml
 --- /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/edit_interface_screen_details.xml	2010-05-05 17:11:14.000000000 +1000
-+++ ./edit_interface_screen_details.xml	2011-11-11 17:00:02.000000000 +1100
++++ ./edit_interface_screen_details.xml	2011-11-11 17:38:08.000000000 +1100
 @@ -49,4 +49,11 @@
  			</function_call>
  		</field>
  	</section>
-+        <section name="Diagnostics">
-+                <field>
-+                        <function_call>
-+                                <paint_function   name="paintDebugInfo"   />
-+                        </function_call>
-+                </field>
-+        </section>
++	<section name="Diagnostics">
++		<field>
++			<function_call>
++				<paint_function   name="paintDebugInfo"   />
++			</function_call>
++		</field>
++	</section>
  </contents>
 diff -Naur /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/locale/en/lang_screen_details.xml ./locale/en/lang_screen_details.xml
 --- /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/locale/en/lang_screen_details.xml	2010-05-05 17:11:14.000000000 +1000
-+++ ./locale/en/lang_screen_details.xml	2011-11-11 17:00:35.000000000 +1100
++++ ./locale/en/lang_screen_details.xml	2011-11-11 17:38:52.000000000 +1100
 @@ -58,4 +58,13 @@
  			<note>If a DB connector is selected, the settings in the 'Connection Setup' section (above) have no effect. DB Connector allows the DB settings to be reused on other DB Data Source assets.</note>
  		</field>
  	</section>
-+        <section name="Diagnostics">
-+                <field>
-+                        <display_name>Debug info</display_name>
-+                        <function_call>
-+                                <paint_function   name="paintDebugInfo"   />
-+                        </function_call>
-+                        <note></note>
-+                </field>
-+        </section>
++	<section name="Diagnostics">
++		<field>
++			<display_name>Debug info</display_name>
++			<function_call>
++				<paint_function   name="paintDebugInfo"   />
++			</function_call>
++			<note></note>
++		</field>
++	</section>
  </contents>
