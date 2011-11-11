@@ -1,0 +1,73 @@
+diff -Naur /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/data_source_db_edit_fns.inc ./data_source_db_edit_fns.inc
+--- /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/data_source_db_edit_fns.inc	2010-08-27 14:29:11.000000000 +1000
++++ ./data_source_db_edit_fns.inc	2011-11-11 17:11:14.000000000 +1100
+@@ -619,5 +619,26 @@
+ 	}//end processDynamicData()
+ 
+ 
++        /**
++        * Paint Debug info for this asset
++        *
++        * @param object &$asset the asset
++        * @param object &$o             the backend outputter
++        * @param string $prefix prefix for form elements
++        *
++        * @return boolean
++        * @access public
++        */
++        function paintDebugInfo(&$asset, &$o, $prefix)
++        {
++                echo "<div>Can connect: " . var_export($asset->connectToDB(), true) . "</div>";
++		if (isset($asset->_tmp['db_conection_exception'])) {
++			echo "<div>Connection failed: " . $asset->_tmp['db_conection_exception']->getMessage() . "</div>";
++		}
++
++                return TRUE;
++        }//end paintDebugInfo()
++
++
+ }//end class
+ ?>
+diff -Naur /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/data_source_db.inc ./data_source_db.inc
+--- /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/data_source_db.inc	2011-08-12 13:23:07.000000000 +1000
++++ ./data_source_db.inc	2011-11-11 17:08:57.000000000 +1100
+@@ -296,6 +296,7 @@
+ 		try {
+ 			$this->_tmp['db_connection'] = MatrixDAL::dbConnect($dsn, 'data_source_db_'.$this->id);
+ 		} catch (Exception $e) {
++			$this->_tmp['db_conection_exception'] = $e;
+ 			return FALSE;
+ 		}
+ 
+diff -Naur /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/edit_interface_screen_details.xml ./edit_interface_screen_details.xml
+--- /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/edit_interface_screen_details.xml	2010-05-05 17:11:14.000000000 +1000
++++ ./edit_interface_screen_details.xml	2011-11-11 17:00:02.000000000 +1100
+@@ -49,4 +49,11 @@
+ 			</function_call>
+ 		</field>
+ 	</section>
++        <section name="Diagnostics">
++                <field>
++                        <function_call>
++                                <paint_function   name="paintDebugInfo"   />
++                        </function_call>
++                </field>
++        </section>
+ </contents>
+diff -Naur /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/locale/en/lang_screen_details.xml ./locale/en/lang_screen_details.xml
+--- /var/www/install_files/mysource_4-4-2/packages/data/data_source_db/locale/en/lang_screen_details.xml	2010-05-05 17:11:14.000000000 +1000
++++ ./locale/en/lang_screen_details.xml	2011-11-11 17:00:35.000000000 +1100
+@@ -58,4 +58,13 @@
+ 			<note>If a DB connector is selected, the settings in the 'Connection Setup' section (above) have no effect. DB Connector allows the DB settings to be reused on other DB Data Source assets.</note>
+ 		</field>
+ 	</section>
++        <section name="Diagnostics">
++                <field>
++                        <display_name>Debug info</display_name>
++                        <function_call>
++                                <paint_function   name="paintDebugInfo"   />
++                        </function_call>
++                        <note></note>
++                </field>
++        </section>
+ </contents>
