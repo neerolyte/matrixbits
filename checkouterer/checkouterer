@@ -45,7 +45,7 @@ create_download_tar() {
 		log "Moving $version tar to downloads directory"
 		mv "$temp/squiz_matrix_$version.tbz2" "$downloads/squiz_matrix_$version.tbz2"
 		log "Done $version"
-	) > "$logs"/"$version".log 2>&1
+	) 2>&1 | tee "$logs"/"$version".log
 }
 
 download_tar_exists() {
