@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 cd "$(dirname "$0")"
 versions=(
@@ -31,15 +31,16 @@ log() {
 create_download_tar() {
 	version=$1
 	(
+		rm -rf "$temp/squiz_matrix_$version"
+		log "Checking out $version"
 		(
 			cd "$temp"
-			log "Checking out $version"
 			../checkout.sh "mysource_$version" "squiz_matrix_$version"
-			log "Compressing $version"
-			tar cjf "squiz_matrix_$version".tbz2 "squiz_matrix_$version"
-			log "Removing temporary directory structure"
-			rm -rf "squiz_matrix_$version"/
 		)
+		log "Compressing $version"
+		tar cjf "squiz_matrix_$version".tbz2 "squiz_matrix_$version"
+		log "Removing temporary directory structure"
+		rm -rf "squiz_matrix_$version"/
 
 		log "Moving $version tar to downloads directory"
 		mv "$temp/squiz_matrix_$version.tbz2" "$downloads/squiz_matrix_$version.tbz2"
