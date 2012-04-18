@@ -1,0 +1,64 @@
+#!/bin/bash -e
+
+cd "$(dirname "$0")"
+versions=(
+	3-18-{0..9}
+	3-20-{0..7}
+	3-22-{0..7}
+	3-24-{0..7}
+	3-26-{0..9}
+	3-28-{0..9}
+	4-0-{0..7}
+	4-2-{0..7}
+	4-4-{0..7}
+	4-6-{0..5}
+	4-8-{0..1}
+)
+temp="$PWD/temp"
+downloads="$PWD/downloads"
+logs="$PWD/logs"
+
+mkdir -p temp
+mkdir -p downloads
+mkdir -p logs
+
+log() {
+	message="$*"
+	date="$(date -Iseconds)"
+	echo "[$date] $message"
+}
+
+create_download_tar() {
+	version=$1
+	(
+		(
+			cd "$temp"
+			log "Checking out $version"
+			../checkout.sh "mysource_$version" "squiz_matrix_$version"
+			log "Compressing $version"
+			tar cjf "squiz_matrix_$version".tbz2 "squiz_matrix_$version"
+			log "Removing temporary directory structure"
+			rm -rf "squiz_matrix_$version"/
+		)
+
+		log "Moving $version tar to downloads directory"
+		mv "$temp/squiz_matrix_$version.tbz2" "$downloads/squiz_matrix_$version.tbz2"
+		log "Done $version"
+	) > "$logs"/"$version".log 2>&1
+}
+
+download_tar_exists() {
+	version=$1
+
+	if ! [[ -f "$downloads/squiz_matrix_$version.tbz2" ]]; then
+		return 1;
+	fi
+}
+
+for version in "${versions[@]}"; do
+	if ! download_tar_exists "$version"; then
+		create_download_tar "$version"
+	fi
+done
+
+
