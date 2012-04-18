@@ -89,8 +89,12 @@ cd ..
 
 # Generate a manifest file for automatic_upgrades
 # to work with.
-find . -type f -not -path ./MANIFEST -a -not -path "*/CVS/*" -print0 | sort -z -k 2 | xargs -0 md5sum > /tmp/MANIFEST.$$
-mv /tmp/MANIFEST.$$ ./MANIFEST
+find . -type f -not -path ./MANIFEST -a -not -path "*/CVS/*" -print0 | sort -z -k 2 | xargs -0 md5sum > ./MANIFEST
+if [ $? -gt 0 ]; then
+	echo "There was a problem generating the manifest file"
+	exit
+fi
+
 
 echo ""
 echo "Everything has been checked out into the $CHECKOUT_DIR/ folder."
